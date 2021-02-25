@@ -1,8 +1,14 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
+  font-family: 'Open Sans', sans-serif;
   font-weight: normal;
+}
+
+h5 {
+  margin-top: 0px;
+  margin-bottom:10px;
+  font-size: 13px;
 }
 
 #mapContainer {
@@ -13,10 +19,10 @@ body {
 
 
 #menu {
-background: green;
+background: #fff;
 position: absolute;
 z-index: 1;
-top: 10px;
+top: 250px;
 right: 10px;
 border-radius: 3px;
 width: 120px;
@@ -24,35 +30,35 @@ border: 1px solid rgba(0, 0, 0, 0.4);
 font-family: 'Open Sans', sans-serif;
 }
 
-#menu a {
-font-size: 13px;
-color: #404040;
-display: block;
-margin: 0;
-padding: 0;
-padding: 10px;
-text-decoration: none;
-border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-text-align: center;
-}
+  #menu a {
+  font-size: 13px;
+  color: #404040;
+  display: block;
+  margin: 0;
+  padding: 0;
+  padding: 10px;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+  text-align: center;
+  }
 
-#menu a:last-child {
-border: none;
-}
+    #menu a:last-child {
+    border: none;
+    }
 
-#menu a:hover {
-background-color: #f8f8f8;
-color: #404040;
-}
+    #menu a:hover {
+    background-color: #f8f8f8;
+    color: #404040;
+    }
 
-#menu a.active {
-background-color: #3887be;
-color: #ffffff;
-}
+    #menu a.active {
+    background-color: #3887be;
+    color: #ffffff;
+    }
 
-#menu a.active:hover {
-background: #3074a4;
-}
+    #menu a.active:hover {
+    background: #3074a4;
+    }
 
 div {
     display: block;
@@ -63,19 +69,24 @@ div {
     background-color: #fff;
     border-radius: 3px;
     top: 10px;
-    left: 60px;
+    right: 10px;
     box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
-    font-size: 14px;
-    padding: 15px;
+    font-size: 13.5px;
+    padding: 20px;
     position: absolute;
     z-index: 1;
 }
 
+.legend div {
+  padding-top: 5px;
+  height: 13.5px;
+  vertical-align: middle;
+}
+
 .legend div span {
-    border-radius: 50%;
     display: inline-block;
-    height: 10px;
+    height: 13.5px;
     margin-right: 5px;
-    width: 10px;
-    font-size: 12px;
+    width: 13.5px;
+    vertical-align: middle;
 }

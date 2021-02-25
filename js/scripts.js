@@ -18,8 +18,8 @@ $.getJSON('./data/coordinates.json', function(floodRows) {
 
     var html = `
       <div>
-        <h4>${floodRow.name}</h4>
-        <h5>data source: ${floodRow.source}<h5>
+        <h5>${floodRow.name}</h5>
+        data source: ${floodRow.source}
       </div>
     `
 
