@@ -18,19 +18,21 @@ $.getJSON('./data/coordinates.json', function(floodRows) {
 
     var html = `
       <div>
-        <h3>${floodRow.name}</h3>
+        <h4>${floodRow.name}</h4>
+        <h5>data source: ${floodRow.source}<h5>
       </div>
     `
 
-  //  all non MUP and CUSP will be this color
-    var color = 'green'
+  //  all non-source tagged will be grey
+    var color = 'steelblue'
+/* if I wanted markers coloured by source
     if (floodRow.source === 'npd advisory') {
         color = 'blue'
 }
     if (floodRow.source === 'prestorm inspection list') {
       color = 'pink'
 }
-
+*/
     new mapboxgl.Marker({
       color: color,
       scale: 0.5,
@@ -59,14 +61,13 @@ map.on('style.load', function() {
       'fill-color': {
         'property': 'iTree ppi updated_Priority Index',
         'stops': [
-          [1, '#4dac26'],
-          [12.5, '#8acb5d'],
-          [25, '#c1e596'],
-          [37.5, '#e5f1d7'],
-          [50, '#f6e5ef'],
-          [62.5, '#f2c0df'],
-          [75, '#e374b8'],
-          [87.2, 'orange'],
+          [12.5, '#4dac26'],
+          [25, '#8acb5d'],
+          [37.5, '#c1e596'],
+          [50, '#e5f1d7'],
+          [62.5, '#f6e5ef'],
+          [75, '#f2c0df'],
+          [87.2, '#e374b8'],
           [100, '#d01c8b']
         ]
       },
