@@ -35,7 +35,7 @@ $.getJSON('./data/coordinates.json', function(floodRows) {
 */
     new mapboxgl.Marker({
       color: color,
-      scale: 0.5,
+      scale: 0.75,
     })
       .setLngLat([floodRow.longitude,floodRow.latitude])
       .setPopup(new mapboxgl.Popup().setHTML(html)) // add popup

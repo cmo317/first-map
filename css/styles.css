@@ -1,3 +1,7 @@
+html, body {
+  height: 100%;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -11,12 +15,37 @@ h5 {
   font-size: 13px;
 }
 
-#mapContainer {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 100%; }
+.flex-container {
+  display: flex;
+  height: 100%;
+}
 
+.flex-left {
+  width: 350px;
+}
+
+.flex-right {
+  flex: 1;
+}
+
+#mapContainer {
+  height: 100%;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+}
+
+#textbox {
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 20px;
+  font-size: 14px;
+}
+
+#textbox > h5 {
+  padding-top: 10px;
+}
 
 #menu {
 background: #fff;
@@ -60,9 +89,7 @@ font-family: 'Open Sans', sans-serif;
     background: #3074a4;
     }
 
-div {
-    display: block;
-}
+
 
 /* props to Lazarus for this legend */
 .legend {
@@ -77,13 +104,13 @@ div {
     z-index: 1;
 }
 
-.legend div {
+.legend > div {
   padding-top: 5px;
   height: 13.5px;
   vertical-align: middle;
 }
 
-.legend div span {
+.legend > div > span {
     display: inline-block;
     height: 13.5px;
     margin-right: 5px;
