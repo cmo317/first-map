@@ -24,9 +24,9 @@ $.getJSON('./data/coordinates1.json', function(floodRows) {
   //  all non-source tagged will be grey
     var color = 'steelblue'
     // if I wanted markers coloured by source
-    if (floodRow.source === 'LTCP community meeting') {
+/*    if (floodRow.source === 'LTCP community meeting') {
         color = 'pink'
-}/*
+}
     if (floodRow.source === 'prestorm inspection list') {
       color = 'pink'
 }
@@ -48,6 +48,7 @@ map.on('style.load', function() {
     'type': 'geojson',
     'data': './data/itreeppi1.geojson'
   });
+//add imperviousness layer
   map.addLayer({
     'id': 'imperviousness',
     'type': 'fill',
@@ -73,6 +74,7 @@ map.on('style.load', function() {
       'fill-opacity': 0.95
     }
   });
+// add density (formerly default) layer
   map.addLayer({
     'id': 'density',
     'type': 'fill',
@@ -98,6 +100,7 @@ map.on('style.load', function() {
       'fill-opacity': 1
     }
   });
+//add minority scenario layer
 map.addLayer({
   'id': 'minority',
   'type': 'fill',
@@ -123,6 +126,7 @@ map.addLayer({
     'fill-opacity': 1
   }
   });
+//add poverty scenario layer
 map.addLayer({
   'id': 'poverty',
   'type': 'fill',
@@ -148,7 +152,8 @@ map.addLayer({
     'fill-opacity': 1
   }
   });
-  // add an empty data source, which we will use to highlight the lot the user is hovering over
+
+  // add an empty data source, which we will use to highlight the block group the user hovers over
   map.addSource('highlight-feature', {
     type: 'geojson',
     data: {
@@ -157,7 +162,7 @@ map.addLayer({
     }
   })
 
-  // add a layer for the highlighted lot
+  // add a layer for the highlighted block group
   map.addLayer({
     id: 'highlight-line',
     type: 'line',
@@ -172,6 +177,7 @@ map.addLayer({
 });
 
 
+/* layers that I want to add later but still need some figuring out
 //adding vector flooding source layer
 // lots of help from https://ovrdc.github.io/gis-tutorials/mapbox/05-2-choropleth/#4/39.94/-95.52
 map.on('style.load', function() {
@@ -210,8 +216,9 @@ map.on('style.load', function() {
       'fill-outline-color': 'black',
       'fill-opacity': 0.95,
 }
-  });
 });
+});
+*/
 
 
 //toggle on/off layers from https://docs.mapbox.com/mapbox-gl-js/example/toggle-layers/
@@ -224,13 +231,27 @@ for (var i = 0; i < toggleableLayerIds.length; i++) {
 
     var link = document.createElement('a');
     link.href = '#';
-    link.className = 'active';
+//    link.className = 'active';
     link.textContent = id;
+
 
     link.onclick = function (e) {
         var clickedLayer = this.textContent;
         e.preventDefault();
         e.stopPropagation();
+        $("#scenario").empty();
+
+// update the criteria in the sidebar based on visible layer
+        if (clickedLayer === 'imperviousness') {
+          $("#scenario").text("imperviousness");
+        } else if (clickedLayer === 'density') {
+          $("#scenario").text("population density");
+        } else if (clickedLayer === 'minority') {
+          $("#scenario").text("percent minority population");
+        } else if (clickedLayer === 'poverty') {
+          $("#scenario").text("percent of population living in poverty");
+        }
+
 
         for (var j = 0; j < toggleableLayerIds.length; j++) {
           if (clickedLayer === toggleableLayerIds[j]) {
@@ -264,13 +285,16 @@ var features = map.queryRenderedFeatures(e.point, {
     layers: ['imperviousness','density','minority','poverty'],
 });
 
+// set up variable to show scenario in sidebar
+//var showScenario = document.getElementById('scenario');
+
 if (features.length > 0) {
   // show the popup
   // Populate the popup and set its coordinates
   // based on the feature found.
   var hoveredFeature = features[0]
 if (features[0].layer.id === 'imperviousness') {
-  var blockID =  hoveredFeature.properties.ppiimpervious
+  var blockID =  hoveredFeature.properties.ppiimpervious;
 } else if (features[0].layer.id === 'density') {
   var blockID = hoveredFeature.properties.ppidefault
 } else if (features[0].layer.id === 'minority') {
