@@ -11,11 +11,9 @@ var map = new mapboxgl.Map({
 var nav = new mapboxgl.NavigationControl();
 map.addControl(nav, 'top-left');
 
-$.getJSON('./data/coordinates.json', function(floodRows) {
+$.getJSON('./data/coordinates1.json', function(floodRows) {
 
   floodRows.forEach(function(floodRow) {
-    console.log(floodRows.name)
-
     var html = `
       <div>
         <h5>${floodRow.name}</h5>
@@ -25,10 +23,10 @@ $.getJSON('./data/coordinates.json', function(floodRows) {
 
   //  all non-source tagged will be grey
     var color = 'steelblue'
-/* if I wanted markers coloured by source
-    if (floodRow.source === 'npd advisory') {
-        color = 'blue'
-}
+    // if I wanted markers coloured by source
+    if (floodRow.source === 'LTCP community meeting') {
+        color = 'pink'
+}/*
     if (floodRow.source === 'prestorm inspection list') {
       color = 'pink'
 }
@@ -48,10 +46,10 @@ $.getJSON('./data/coordinates.json', function(floodRows) {
 map.on('style.load', function() {
   map.addSource('iTree', {
     'type': 'geojson',
-    'data': './data/itreeppi.geojson'
+    'data': './data/itreeppi1.geojson'
   });
   map.addLayer({
-    'id': 'iTreeLayer',
+    'id': 'imperviousness',
     'type': 'fill',
     'source': 'iTree',
     'layout': {
@@ -59,7 +57,7 @@ map.on('style.load', function() {
     },
     'paint': {
       'fill-color': {
-        'property': 'iTree ppi updated_Priority Index',
+        'property': 'ppiimpervious',
         'stops': [
           [12.5, '#4dac26'],
           [25, '#8acb5d'],
@@ -75,38 +73,230 @@ map.on('style.load', function() {
       'fill-opacity': 0.95
     }
   });
+  map.addLayer({
+    'id': 'density',
+    'type': 'fill',
+    'source': 'iTree',
+    'layout': {
+      'visibility': 'none'
+    },
+    'paint': {
+      'fill-color': {
+        'property': 'ppidefault',
+        'stops': [
+          [12.5, '#4dac26'],
+          [25, '#8acb5d'],
+          [37.5, '#c1e596'],
+          [50, '#e5f1d7'],
+          [62.5, '#f6e5ef'],
+          [75, '#f2c0df'],
+          [87.2, '#e374b8'],
+          [100, '#d01c8b']
+        ]
+      },
+      'fill-outline-color': 'white',
+      'fill-opacity': 1
+    }
+  });
+map.addLayer({
+  'id': 'minority',
+  'type': 'fill',
+  'source': 'iTree',
+  'layout': {
+    'visibility': 'none'
+  },
+  'paint': {
+    'fill-color': {
+      'property': 'ppiminority',
+      'stops': [
+        [12.5, '#4dac26'],
+        [25, '#8acb5d'],
+        [37.5, '#c1e596'],
+        [50, '#e5f1d7'],
+        [62.5, '#f6e5ef'],
+        [75, '#f2c0df'],
+        [87.2, '#e374b8'],
+        [100, '#d01c8b']
+      ]
+    },
+    'fill-outline-color': 'white',
+    'fill-opacity': 1
+  }
+  });
+map.addLayer({
+  'id': 'poverty',
+  'type': 'fill',
+  'source': 'iTree',
+  'layout': {
+    'visibility': 'none'
+  },
+  'paint': {
+    'fill-color': {
+      'property': 'ppipoverty',
+      'stops': [
+        [12.5, '#4dac26'],
+        [25, '#8acb5d'],
+        [37.5, '#c1e596'],
+        [50, '#e5f1d7'],
+        [62.5, '#f6e5ef'],
+        [75, '#f2c0df'],
+        [87.2, '#e374b8'],
+        [100, '#d01c8b']
+      ]
+    },
+    'fill-outline-color': 'white',
+    'fill-opacity': 1
+  }
+  });
+  // add an empty data source, which we will use to highlight the lot the user is hovering over
+  map.addSource('highlight-feature', {
+    type: 'geojson',
+    data: {
+      type: 'FeatureCollection',
+      features: []
+    }
+  })
+
+  // add a layer for the highlighted lot
+  map.addLayer({
+    id: 'highlight-line',
+    type: 'line',
+    source: 'highlight-feature',
+    paint: {
+      'line-width': 5,
+      'line-opacity': 0.9,
+      'line-color': 'white',
+    }
+  });
+
 });
+
+
+//adding vector flooding source layer
+// lots of help from https://ovrdc.github.io/gis-tutorials/mapbox/05-2-choropleth/#4/39.94/-95.52
+map.on('style.load', function() {
+  map.addSource('flooding', {
+    'type': 'geojson',
+    'data': './data/lines.geojson'
+  });
+  map.addLayer({
+    'id': 'floodingLayer',
+    'type': 'line',
+    'source': 'flooding',
+    'layout': {
+      'visibility': 'visible'
+    },
+    'paint': {
+      'line-color': 'black',
+      'line-width': 3    }
+  });
+});
+
+//adding fill flooding source layer
+map.on('style.load', function() {
+  map.addSource('floodingEXT', {
+    'type': 'geojson',
+    'data': './data/shapes1.geojson'
+  });
+  map.addLayer({
+    'id': 'floodingEXTLayer',
+    'type': 'fill',
+    'source': 'floodingEXT',
+    'layout': {
+      'visibility': 'visible'
+    },
+    'paint': {
+      'fill-color': 'black',
+      'fill-outline-color': 'black',
+      'fill-opacity': 0.95,
+}
+  });
+});
+
 
 //toggle on/off layers from https://docs.mapbox.com/mapbox-gl-js/example/toggle-layers/
 // enumerate ids of the layers
-var toggleableLayerIds = ['iTreeLayer'];
+var toggleableLayerIds = ['imperviousness','density','minority','poverty'];
 
 // set up the corresponding toggle button for each layer
 for (var i = 0; i < toggleableLayerIds.length; i++) {
-var id = toggleableLayerIds[i];
+    var id = toggleableLayerIds[i];
 
-var link = document.createElement('a');
-link.href = '#';
-link.className = 'active';
-link.textContent = id;
+    var link = document.createElement('a');
+    link.href = '#';
+    link.className = 'active';
+    link.textContent = id;
 
-link.onclick = function (e) {
-var clickedLayer = this.textContent;
-e.preventDefault();
-e.stopPropagation();
+    link.onclick = function (e) {
+        var clickedLayer = this.textContent;
+        e.preventDefault();
+        e.stopPropagation();
 
-var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+        for (var j = 0; j < toggleableLayerIds.length; j++) {
+          if (clickedLayer === toggleableLayerIds[j]) {
+            layers.children[j].className = 'active';
+            map.setLayoutProperty(toggleableLayerIds[j], 'visibility', 'visible');
+          }
+          else {
+            layers.children[j].className = '';
+            map.setLayoutProperty(toggleableLayerIds[j], 'visibility', 'none');
+          }
+  }
 
-// toggle layer visibility by changing the layout object's visibility property
-if (visibility === 'visible') {
-map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-this.className = '';
-} else {
-this.className = 'active';
-map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-}
-};
+    };
 
 var layers = document.getElementById('menu');
 layers.appendChild(link);
 }
+
+
+
+//attempt to get hover popup working
+// Create a popup, but don't add it to the map yet.
+var popup = new mapboxgl.Popup({
+closeButton: false,
+closeOnClick: false
+});
+
+map.on('mousemove', function (e) {
+// query for the features under the mouse, but only in the lots layer
+var features = map.queryRenderedFeatures(e.point, {
+    layers: ['imperviousness','density','minority','poverty'],
+});
+
+if (features.length > 0) {
+  // show the popup
+  // Populate the popup and set its coordinates
+  // based on the feature found.
+  var hoveredFeature = features[0]
+if (features[0].layer.id === 'imperviousness') {
+  var blockID =  hoveredFeature.properties.ppiimpervious
+} else if (features[0].layer.id === 'density') {
+  var blockID = hoveredFeature.properties.ppidefault
+} else if (features[0].layer.id === 'minority') {
+  var blockID = hoveredFeature.properties.ppiminority
+} else if (features[0].layer.id === 'poverty') {
+  var blockID = hoveredFeature.properties.ppipoverty
+}
+
+  var popupContent = `
+    <div>
+      ${blockID}
+    </div>
+  `
+
+  popup.setLngLat(e.lngLat).setHTML(popupContent).addTo(map);
+
+  // set this lot's polygon feature as the data for the highlight source
+  map.getSource('highlight-feature').setData(hoveredFeature.geometry);
+
+  // show the cursor as a pointer
+  map.getCanvas().style.cursor = 'pointer';
+} else {
+  // remove the Popup
+  popup.remove();
+
+  map.getCanvas().style.cursor = '';
+}
+
+})
